@@ -4,7 +4,21 @@
 
 
 
-
+/*
+ * Notes about C++
+ * To create a class hierarchey the Base class must have a public virtual method like this:
+ * virtual void f(void){}
+ *
+ * Subclasses must specify:
+ * class MySubClass: public MySuperClass{}
+ *
+ * To add to a vector we must use pointers. The way to get pointers to classes is using the new keyword:
+ * Example: new Attribute()
+ *
+ * To get back the original object use dynamic cast:
+ * dynamic_cast<MySubClass*>(mySuperClassPtr);
+ *
+ */
 
 
 
