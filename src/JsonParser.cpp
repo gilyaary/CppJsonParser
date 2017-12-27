@@ -53,6 +53,7 @@ void Attribute::setName(std::string name){this->name = name;}
 void Attribute::setValue(std::string value){this->value = value;}
 std::string Attribute::getName(){return name;}
 std::string Attribute::getValue(){return value;}
+Attribute::Attribute(){}
 Attribute::Attribute(std::string name, std::string value){
 	this->name = name;
 	this->value = value;
@@ -63,10 +64,31 @@ void ElementAttribute::setName(std::string name){this->name = name;}
 void ElementAttribute::setValue(JsonElement& value){this->value = value;}
 std::string ElementAttribute::getName(){return name;}
 JsonElement& ElementAttribute::getValue(){return value;}
+ElementAttribute::ElementAttribute(){}
 ElementAttribute::ElementAttribute(std::string name, JsonElement& value){
 	this->name = name;
 	this->value = value;
 };
+
+void ArrayAttribute::setName(std::string name){this->name = name;}
+void ArrayAttribute::setValue(std::vector<std::string>& value){this->value = value;}
+std::string ArrayAttribute::getName(){return name;}
+std::vector<std::string>& ArrayAttribute::getValue(){return value;}
+ArrayAttribute::ArrayAttribute(std::string name, std::vector<std::string>& value){
+	this->name = name;
+	this->value = value;
+}
+ArrayAttribute::ArrayAttribute(){}
+
+void ElementArrayAttribute::setName(std::string name){this->name = name;}
+void ElementArrayAttribute::setValue(std::vector<JsonElement>& value){this->value = value;}
+std::string ElementArrayAttribute::getName(){return name;}
+std::vector<JsonElement> ElementArrayAttribute::getValue(){return value;}
+ElementArrayAttribute::ElementArrayAttribute(std::string name, std::vector<JsonElement>& value){
+	this->name = name;
+	this->value = value;
+}
+ElementArrayAttribute::ElementArrayAttribute(){}
 
 
 
@@ -187,29 +209,47 @@ void JsonParser::_readAttribute(JsonElement &jsonElement){
     }
     else if(this->cleanJsonString.at(currentPosition) == '['){
     	this->currentPosition += 1;
-    	for( ; ; ){
-			if( cleanJsonString.at(currentPosition) == ']' ){
-			   //break the loop
-				this->currentPosition += 1;
-				break;
-			}
-			//this->currentPosition += 1;
 
-			if( cleanJsonString.at(currentPosition) == '{' ){
-				//handle element attribute
-				JsonElement el = _parseElement(attributeName);
-				//todo to array of element values
+    	if(cleanJsonString.at(currentPosition) == '{'){
+    		std::vector<JsonElement> values;
+    		for( ; ; ){
+				if( cleanJsonString.at(currentPosition) == ']' ){
+					this->currentPosition += 1;
+					break;
+				}
+				if( cleanJsonString.at(currentPosition) == '{' ){
+					JsonElement el = _parseElement(attributeName);
+					values.push_back(el);
+					if( cleanJsonString.at(currentPosition) == '}' ){
+						this->currentPosition += 1;
+					}
+					if( cleanJsonString.at(currentPosition) == ',' ){
+						this->currentPosition += 1;
+					}
+				}
 			}
-			else{
+    		ElementArrayAttribute* attributePtr = new ElementArrayAttribute(attributeName, values);
+    		jsonElement.getAttributes().push_back(attributePtr);
+    	}
+    	else{
+    		std::vector<std::string> values;
+    		for( ; ; ){
+				if( cleanJsonString.at(currentPosition) == ']' ){
+				   //break the loop
+					this->currentPosition += 1;
+					break;
+				}
 				std::string attributeValue = getAttributeValue();
-				//todo add to array of primitive values
+				values.push_back(attributeValue);
 				if( cleanJsonString.at(currentPosition) == ',' ){
 					this->currentPosition += 1;
 				}
 			}
-		}
-    	Attribute* attributePtr = new Attribute(attributeName, "TEMP_VALUE");
-        jsonElement.getAttributes().push_back(attributePtr);
+			ArrayAttribute* attributePtr = new ArrayAttribute(attributeName, values);
+			jsonElement.getAttributes().push_back(attributePtr);
+    	}
+
+
     }
     else{
     	std::string attributeValue = getAttributeValue();

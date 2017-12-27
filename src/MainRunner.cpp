@@ -28,7 +28,7 @@ void printSpaces(int count);
 int main()
 {
     //[1,2,3,4,5]
-	std::string s = "{\"Key1\" :[1,2,3,4,5],      \"Key2\" : \" Value2 \",   \"Key3\" :  333,   \"Key4\" : {a:111,b:{b_a:1111, b_b:2222, b_c:{b_c_a:111111,b_c_b:222222}}}, \"Key5\":\"Key5Value\"         }";
+	std::string s = "{\"Key1\" :[1,2,3,4,5], \"Key2\":[{\"Key2_1\":\"21\"},{\"Key2_2\":\"22\"},{\"Key2_2\":\"23\"}],   \"Key3\" :  333,   \"Key4\" : {a:111,b:{b_a:1111, b_b:2222, b_c:{b_c_a:111111,b_c_b:222222}}}, \"Key5\":\"Key5Value\"         }";
     JsonParser parser;
     JsonElement el = parser.parseElement(s);
     printElement(el, 0);
@@ -60,13 +60,22 @@ void printElement(JsonElement& el, int depth){
 		else if(elementAttributePtr){
 			std::cout << elementAttributePtr->getName() << ":" << std::endl;
 			printElement(elementAttributePtr->getValue(), depth+1);
-
 		}
 		else if(arrayAttributePtr){
-
+			std::cout << arrayAttributePtr->getName() << ":[";
+			vector<std::string> values = arrayAttributePtr->getValue();
+			for(uint j=0; j < values.size(); j++){
+				std::cout << values[j] << ",";
+			}
+			std::cout << "]" << std::endl;
 		}
 		else if(elementArrayAttributePtr){
-
+			std::cout << elementArrayAttributePtr->getName() << ":[" << std::endl;
+			vector<JsonElement> values = elementArrayAttributePtr->getValue();
+			for(uint j=0; j < values.size(); j++){
+				printElement(values[j], depth+1);
+			}
+			std::cout << "]" << std::endl;
 		}
 		//std::cout << atts[i].getName() << ":" << atts[i].getValue() << std::endl;
 	}
