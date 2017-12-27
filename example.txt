@@ -1,0 +1,49 @@
+{
+    
+    admin:{
+        roles:[
+            "Developer",
+            "SysAdmin"
+        ]
+        role_permission:{
+        	"Developer": ["W","R", "X"],
+            "SysAdmin": ["W","R", "X"]
+        },
+        "poonemeround":[{a:a,b:b},{aa:aa,bb:bb},{aaa:aaa,bbb:bbb}]
+    },
+    
+    programs:[
+    	{
+    	    id:1,
+    	    name:"Front Lawn",
+    	    startTime:"10:05",
+    	    duration:5,
+    	    days:[1,2,3,5,6],
+    	    humidityEffect:0.1
+    	},
+    	{
+    	    id:2,
+    	    name:"Front Lawn",
+    	    startTime:"20:05",
+    	    duration:5,
+    	    days:[1,2,3,5,6],
+    	    humidityEffect:0.1
+    	},
+    	{
+    	    id:3,
+    	    name:"Orange Trees",
+    	    startTime:"11:05",
+    	    duration:10,
+    	    days:[4,7],
+    	    humidityEffect:0.2
+    	},
+    	{
+    	    id:4,
+    	    name:"Orange Trees",
+    	    startTime:"11:05",
+    	    duration:10,
+    	    days:[4,7],
+    	    humidityEffect:0.2
+    	}
+    ]
+}

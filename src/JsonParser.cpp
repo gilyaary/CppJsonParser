@@ -10,6 +10,9 @@ std::string JsonParser :: removeSpaces(std::string str){
     char lastChar = 'X';
 
     for(int i=0; i< len; i++){
+    	if(i>10000){
+    		break;
+    	}
         char ch = str.at(i);
         if(inQuotes == 0 && (ch == ' ' || ch == '\n' || ch == '\t')  ){
 
@@ -104,7 +107,7 @@ JsonElement JsonParser::_parseElement(std::string name){
     jsonElement.setName(name);
 
     //std::cout << "Element For loop\n";
-    for( ; ; ){
+    for( int i=0 ; i< 10000 ; i++){
         if( cleanJsonString.at(currentPosition) == '}' ){
             return jsonElement;
         }
@@ -137,7 +140,7 @@ std::string JsonParser::getAttributeName() {
 	int endQuoteFound = 0;
 	//std::cout << "Before Att Name Loop\n";
 	//Attribute name loop
-	for (;; currentPosition++) {
+	for (;currentPosition < 10000; currentPosition++) {
 		char currentChar = cleanJsonString.at(currentPosition);
 		//std::cout << "CurrentChar: " << cleanJsonString.at(currentPosition) << "\n";
 		if (isQuoted && currentChar == '\"' && lastChar != '\\') {
@@ -165,11 +168,12 @@ std::string JsonParser::getAttributeValue() {
 	std::string attributeValue;
 	int endQuoteFound2 = 0;
 	//Attribute value loop
-	for (;; currentPosition++) {
+	for (;currentPosition<10000; currentPosition++) {
 		char currentChar = cleanJsonString.at(currentPosition);
 		if (isQuoted2 && currentChar == '\"' && lastChar2 != '\\') {
 			//Assert that the next character must be :
 			endQuoteFound2 = 1;
+			break;
 		} else {
 			if ((endQuoteFound2 || isQuoted2 != 1)
 					&& (currentChar == ',' || currentChar == '}')) {
@@ -212,7 +216,7 @@ void JsonParser::_readAttribute(JsonElement &jsonElement){
 
     	if(cleanJsonString.at(currentPosition) == '{'){
     		std::vector<JsonElement> values;
-    		for( ; ; ){
+    		for(int i=0 ; i<10000; i++){
 				if( cleanJsonString.at(currentPosition) == ']' ){
 					this->currentPosition += 1;
 					break;
@@ -233,7 +237,7 @@ void JsonParser::_readAttribute(JsonElement &jsonElement){
     	}
     	else{
     		std::vector<std::string> values;
-    		for( ; ; ){
+    		for(int i=0 ; i<10000; i++){
 				if( cleanJsonString.at(currentPosition) == ']' ){
 				   //break the loop
 					this->currentPosition += 1;
@@ -243,6 +247,12 @@ void JsonParser::_readAttribute(JsonElement &jsonElement){
 				values.push_back(attributeValue);
 				if( cleanJsonString.at(currentPosition) == ',' ){
 					this->currentPosition += 1;
+				}
+				else if( cleanJsonString.at(currentPosition) == '\"' ){
+					this->currentPosition += 1;
+					if( cleanJsonString.at(currentPosition) == ',' ){
+						this->currentPosition += 1;
+					}
 				}
 			}
 			ArrayAttribute* attributePtr = new ArrayAttribute(attributeName, values);
