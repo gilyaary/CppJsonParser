@@ -6,6 +6,9 @@
 #include <fstream>
 using namespace std;
 
+
+//-c ${A.COMPILER.WARNING_FLAGS} -Os -g -mlongcalls -mtext-section-literals -fno-exceptions -falign-functions=4 -std=c++11 -MMD -ffunction-sections -fdata-sections
+
 /*
  * Notes about C++
  * To create a class hierarchey the Base class must have a public virtual method like this:
