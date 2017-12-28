@@ -13,6 +13,7 @@
 #include "JsonParser.h"
 using namespace std;
 
+
 class Program {
 	int id;
 	string name;
@@ -20,6 +21,7 @@ class Program {
     int duration;
     vector<int> days;
     float humidityEffect;
+    vector<int> outputs;
 
 
 public:
@@ -73,7 +75,16 @@ public:
 	void setStartTime(const string& startTime) {
 		this->startTime = startTime;
 	}
+
 	Program(JsonElement& el);
+
+	const vector<int>& getOutputs() const {
+		return outputs;
+	}
+
+	void setOutputs(const vector<int>& outputs) {
+		this->outputs = outputs;
+	}
 };
 
 #endif /* PROGRAM_H_ */

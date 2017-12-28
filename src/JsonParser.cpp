@@ -1,7 +1,20 @@
 #include "JsonParser.h"
 
+/*
+Issues with dynamic cast look in:
+/home/gil/eclipse/sloeber/arduinoPlugin/packages/esp8266/hardware/esp8266/2.3.0/platform.txt
+/home/gil/eclipse/sloeber/arduinoPlugin/packages/arduino/hardware/sam/1.6.11/platform.txt
+/home/gil/eclipse/sloeber/arduinoPlugin/packages/arduino/hardware/avr/1.6.20/platform.txt
+/home/gil/eclipse/arduino-1.8.5/hardware/arduino/avr/platform.txt
+/home/gil/eclipse/arduino-1.8.5/hardware/platform.txt
+/home/gil/.arduino15/packages/esp8266/hardware/esp8266/2.3.0/platform.txt
+It apparently is true that “RTTI (run-time type information) is disabled with the fno-rtti compiler flag”; however, looking at compiler.c.flags and compiler.cpp.flags in platform.txt, no fno-rtti compiler flag is set, suggesting that gcc sets it by default.
+One way to turn off fno-rtti is adding a -frtti flag into the appropriate flags string in platform.txt. As a side effect, this will affect all sketches subsequently compiled, rather than only those that need dynamic casts.
+Note, on a microcontroller, a more-appropriate way to deal with the problem is getting rid of the need for dynamic casts, via function overloading.
+ */
 
-uint debug = 0;
+
+//uint debug = 0;
 
 
 string JsonParser :: removeSpaces(string str){
@@ -98,7 +111,7 @@ ElementArrayAttribute::ElementArrayAttribute(){}
 JsonElement JsonParser::parseElement(string jsonString){
 	this->currentPosition = 0;
     string clean = this->removeSpaces(jsonString);
-    cout << clean << endl;
+    //cout << clean << endl;
     return this->_parseElement("ROOT");
 }
 
@@ -191,9 +204,9 @@ string JsonParser::getAttributeValue() {
 		}
 		lastChar2 = currentChar;
 	}
-	if (debug == 1) {
-		cout << "AttributeValue: " << attributeValue << "\n";
-	}
+//	if (debug == 1) {
+//		cout << "AttributeValue: " << attributeValue << "\n";
+//	}
 	return attributeValue;
 }
 
@@ -203,9 +216,9 @@ void JsonParser::_readAttribute(JsonElement &jsonElement){
     //todo: process one attribute, incrementing the internal currentPosition
     //return if currentPosition is }
 	string attributeName = getAttributeName();
-    if(debug == 1){
-    	cout << "AttributeName: " << attributeName << "\n";
-    }
+//    if(debug == 1){
+//    	cout << "AttributeName: " << attributeName << "\n";
+//    }
     currentPosition++;
 
     if(this->cleanJsonString.at(currentPosition) == '{'){
@@ -272,7 +285,6 @@ void JsonParser::_readAttribute(JsonElement &jsonElement){
     }
 
 }
-
 
 string getAttName(AbstractAttribute* attPtr){
 	Attribute* attributePtr = dynamic_cast<Attribute*>(attPtr);
