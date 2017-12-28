@@ -23,87 +23,87 @@ const int ELEMENT_ATTRIBUTE = 1;
 const int STRING_ARRAY_ATTRIBUTE = 2;
 const int ELEMENT_ARRAY_ATTRIBUTE = 3;
 
+
 class AbstractAttribute{
 	public:
 	    virtual void f(void){}
 };
 class Attribute: public AbstractAttribute{
-    std::string name;
-    std::string value;
+    string name;
+    string value;
     public:
-        void setName(std::string name);
-        void setValue(std::string value);
-        std::string getName();
-        std::string getValue();
-        Attribute(std::string name, std::string value);
+        void setName(string name);
+        void setValue(string value);
+        string getName();
+        string getValue();
+        Attribute(string name, string value);
         Attribute();
         int class_type(){return STRING_ATTRIBUTE;}
 };
 class ArrayAttribute: public AbstractAttribute{
-    std::string name;
-    std::vector<std::string> value;
+    string name;
+    vector<string> value;
     public:
-        void setName(std::string name);
-        void setValue(std::vector<std::string>& value);
-        std::string getName();
-        std::vector<std::string>& getValue();
-        ArrayAttribute(std::string name, std::vector<std::string>& value);
+        void setName(string name);
+        void setValue(vector<string>& value);
+        string getName();
+        vector<string>& getValue();
+        ArrayAttribute(string name, vector<string>& value);
         ArrayAttribute();
         int class_type(){return STRING_ARRAY_ATTRIBUTE;}
 };
 
 class JsonElement{
-    std::string name;
-    std::vector<AbstractAttribute*> attributes;
-    //std::vector<ElementAttribute> elementAttributes;
+    string name;
+    vector<AbstractAttribute*> attributes;
+    //vector<ElementAttribute> elementAttributes;
     public:
-        void setName(std::string name);
-        std::vector<AbstractAttribute*>& getAttributes();
-        //std::vector<ElementAttribute>& getElementAttributes();
+        void setName(string name);
+        vector<AbstractAttribute*>& getAttributes();
+        //vector<ElementAttribute>& getElementAttributes();
         JsonElement();
 };
 class ElementAttribute: public AbstractAttribute{
-    std::string name;
+    string name;
     JsonElement value;
     public:
-        void setName(std::string name);
+        void setName(string name);
         void setValue(JsonElement& value);
-        std::string getName();
+        string getName();
         JsonElement& getValue();
-        ElementAttribute(std::string name, JsonElement& value);
+        ElementAttribute(string name, JsonElement& value);
         ElementAttribute();
         int class_type(){return ELEMENT_ATTRIBUTE;}
 };
 class ElementArrayAttribute: public AbstractAttribute{
-    std::string name;
-    std::vector<JsonElement> value;
+    string name;
+    vector<JsonElement> value;
     public:
-        void setName(std::string name);
-        void setValue(std::vector<JsonElement>& value);
-        std::string getName();
-        std::vector<JsonElement> getValue();
-        ElementArrayAttribute(std::string name, std::vector<JsonElement>& value);
+        void setName(string name);
+        void setValue(vector<JsonElement>& value);
+        string getName();
+        vector<JsonElement> getValue();
+        ElementArrayAttribute(string name, vector<JsonElement>& value);
         ElementArrayAttribute();
         int class_type(){return ELEMENT_ARRAY_ATTRIBUTE;}
 };
 
 
 class JsonParser{
-    std::string jsonString;
+    string jsonString;
     int currentPosition;
     int len;
-    std::string removeSpaces(std::string str);
-    JsonElement _parseElement(std::string name);
-    std::string cleanJsonString;
+    string removeSpaces(string str);
+    JsonElement _parseElement(string name);
+    string cleanJsonString;
     void _readAttribute(JsonElement &jsonElement);
-	std::string getAttributeValue();
-	std::string getAttributeName();
+	string getAttributeValue();
+	string getAttributeName();
 
     public:
-        JsonElement parseElement(std::string jsonString);
+        JsonElement parseElement(string jsonString);
 };
 
-
-
-
+string getAttName(AbstractAttribute* att);
+string getAttValue(AbstractAttribute* attPtr);
 #endif /* JSONPARSER_H_ */

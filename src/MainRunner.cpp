@@ -1,6 +1,7 @@
 #include "ParseScheduleFunctions.h"
 #include "ParseScheduleCsv.h"
 #include "JsonParser.h"
+#include "Program.h"
 #include <iostream>
 #include <fstream>
 using namespace std;
@@ -19,15 +20,18 @@ using namespace std;
  * To get back the original object use dynamic cast:
  * dynamic_cast<MySubClass*>(mySuperClassPtr);
  *
+ * we use "use namespace std" to avoid prefixing std::string, std::vector
+ *
  */
 
+void a(vector<AbstractAttribute*>& v);
 void printElement(JsonElement& el, int depth);
 void printSpaces(int count);
-string readFile(char* filePath);
-
+string readFile(string filePath);
+void convertToPrograms(JsonElement& el);
 int main() {
 
-	char* path = "example.txt";
+	string path = "example2.txt";
 	string s = readFile(path);
 	//string s = "{\"Key1\" :[1,2,3,4,5], \"Key2\":[{\"Key2_1\":\"21\"},{\"Key2_2\":\"22\"},{\"Key2_2\":\"23\"}],   \"Key3\" :  333,   \"Key4\" : {a:111,b:{b_a:1111, b_b:2222, b_c:{b_c_a:111111,b_c_b:222222}}}, \"Key5\":\"Key5Value\"         }";
 
@@ -35,15 +39,38 @@ int main() {
 	JsonParser parser;
 	JsonElement el = parser.parseElement(s);
 	printElement(el, 0);
+
+	convertToPrograms(el);
+
+
 	return 0;
 }
+
+void convertToPrograms(JsonElement& el){
+	vector<AbstractAttribute*> atts = el.getAttributes();
+		for (uint i = 0; i < atts.size(); i++) {
+			AbstractAttribute* attPtr = atts[i];
+			//Attribute* attributePtr = dynamic_cast<Attribute*>(attPtr);
+			//ElementAttribute* elementAttributePtr = dynamic_cast<ElementAttribute*>(attPtr);
+			//ArrayAttribute* arrayAttributePtr = dynamic_cast<ArrayAttribute*>(attPtr);
+			ElementArrayAttribute* elementArrayAttributePtr = dynamic_cast<ElementArrayAttribute*>(attPtr);
+			if(elementArrayAttributePtr && elementArrayAttributePtr->getName() == "programs"){
+				vector<JsonElement> programsVector = elementArrayAttributePtr->getValue();
+				for(uint j = 0; j<programsVector.size(); j++){
+					JsonElement programEl = programsVector[i];
+					Program* program = new Program(programEl);
+					string programName = program->getName();
+					cout << "Program Name: " << programName + "\n";
+				}
+			}
+		}
+}
+
 void printSpaces(int count) {
 	for (int i = 0; i < count * 4; i++) {
 		cout << " "; // << endl;
 	}
 }
-
-void a(vector<AbstractAttribute*>& v);
 
 void printElement(JsonElement& el, int depth) {
 	vector<AbstractAttribute*> atts = el.getAttributes();
@@ -88,11 +115,11 @@ void printElement(JsonElement& el, int depth) {
 
 }
 
-string readFile(char* filePath) {
+string readFile(string filePath) {
 	string line;
 	string lines;
 	ifstream myfile;
-	myfile.open(filePath);
+	myfile.open(filePath.c_str());
 	//(filePath);
 	if (myfile.is_open()) {
 		while (getline(myfile, line)) {
